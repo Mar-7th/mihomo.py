@@ -22,6 +22,10 @@ from mihomo.model import Language
 async def main():
     api = MihomoApi()
 
+    # # Set index file path, default is "data/index"
+    # # Index files will be downloaded to this path
+    # api.set_index_path("data/index")
+
     # # Set i18n if needed, default is False
     # api.set_i18n(True)
 
