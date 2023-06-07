@@ -36,73 +36,72 @@ class BaseData(Struct):
 
 
 class SpaceChallengeData(BaseData):
-    MazeGroupID: int = 0
-    MazeGroupIndex: int = 0
-    PreMazeGroupIndex: int = 0
+    scheduleMaxLevel: int = 0
+    scheduleGroupId: int = 0
+    noneScheduleMaxLevel: int = 0
 
 
 class SpaceData(BaseData):
-    ChallengeData: Optional[SpaceChallengeData] = None
-    PassAreaProgress: int = 0
-    LightConeCount: int = 0
-    AvatarCount: int = 0
-    AchievementCount: int = 0
+    challengeInfo: Optional[SpaceChallengeData] = None
+    maxRogueChallengeScore: int = 0
+    equipmentCount: int = 0
+    avatarCount: int = 0
+    achievementCount: int = 0
 
 
 class EquipmentData(BaseData):
-    ID: int
-    Rank: int = 1
-    Level: int = 1
-    Promotion: int = 0
+    tid: int
+    rank: int = 1
+    level: int = 1
+    promotion: int = 0
 
 
-class BehaviorData(BaseData):
-    BehaviorID: int
-    Level: int = 0
+class SkillTreeData(BaseData):
+    pointId: int
+    level: int = 0
 
 
 class SubAffixData(BaseData):
-    SubAffixID: int
-    Cnt: int = 0
-    Step: int = 0
+    affixId: int
+    cnt: int = 0
+    step: int = 0
 
 
 class RelicData(BaseData):
-    ID: int
-    MainAffixID: int
-    Type: int
-    Level: int = 0
-    EXP: int = 0
-    RelicSubAffix: List[SubAffixData] = []
+    tid: int
+    mainAffixId: int
+    type: int
+    level: int = 0
+    exp: int = 0
+    subAffixList: List[SubAffixData] = []
 
 
 class CharacterData(BaseData):
-    AvatarID: int
-    Rank: int = 0
-    Level: int = 1
-    Promotion: int = 0
-    EquipmentID: Optional[EquipmentData] = None
-    BehaviorList: List[BehaviorData] = []
-    RelicList: List[RelicData] = []
+    avatarId: int
+    rank: int = 0
+    level: int = 1
+    promotion: int = 0
+    equipment: Optional[EquipmentData] = None
+    skillTreeList: List[SkillTreeData] = []
+    relicList: List[RelicData] = []
 
 
 class PlayerData(BaseData):
-    UID: int
-    NickName: str
-    Level: int = 0
-    WorldLevel: int = 0
-    CurFriendCount: int = 0
-    HeadIconID: int = 200001
-    Signature: str = ""
-    Birthday: int = 0
-    IsDisplayAvatarList: bool = False
-    PlayerSpaceInfo: Optional[SpaceData] = None
-    AssistAvatar: Optional[CharacterData] = None
-    DisplayAvatarList: List[CharacterData] = []
+    uid: int
+    nickname: str
+    level: int = 0
+    worldLevel: int = 0
+    friendCount: int = 0
+    headIcon: int = 200001
+    signature: str = ""
+    isDisplayAvatar: bool = False
+    recordInfo: Optional[SpaceData] = None
+    assistAvatarDetail: Optional[CharacterData] = None
+    avatarDetailList: List[CharacterData] = []
 
 
 class MihomoApiData(BaseData):
-    PlayerDetailInfo: Optional[PlayerData] = None
+    detailInfo: Optional[PlayerData] = None
 
 
 class SpaceChallengeInfo(BaseData):
@@ -127,7 +126,6 @@ class PlayerInfo(BaseData):
     friend_count: int = 0
     avatar: Optional[AvatarInfo] = None
     signature: str = ""
-    birthday: int = 0
     is_display: bool = False
     space_info: Optional[SpaceInfo] = None
 

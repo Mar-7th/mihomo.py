@@ -45,7 +45,7 @@ file_set = {
 
 
 class MihomoApi:
-    language: Language = Language.EN
+    language = Language.EN
     i18n: bool = False
     index_path = Path.cwd() / "data" / "index"
     res_url = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/"
@@ -77,11 +77,9 @@ class MihomoApi:
                 if not (self.index_path / self.language.value / file).exists():
                     if not (await self.download_index(file, self.language.value)):
                         raise Exception(
-                            f"Download index {file} of {self.language} failed."
+                            f"Download index {file} of {self.language.value} failed."
                         )
-            self.index[self.language.value] = Index(
-                self.index_path / self.language.value
-            )
+            self.index[self.language] = Index(self.index_path / self.language.value)
         else:
             for language in Language:
                 for file in file_set:
@@ -102,6 +100,7 @@ class MihomoApi:
             folder.mkdir(parents=True)
         with open(folder / file, "wb") as f:
             f.write(response.content)
+        print(f"Succeed to download: {language} index {file}.")
         return True
 
     async def request(self, url):
@@ -123,46 +122,46 @@ class MihomoApi:
     def character_parse(
         self, data: CharacterData, language: Optional[Language] = None
     ) -> Optional[CharacterInfo]:
-        if data.EquipmentID:
+        if data.equipment:
             light_cone = LightConeBasicInfo(
-                id=str(data.EquipmentID.ID),
-                rank=data.EquipmentID.Rank,
-                level=data.EquipmentID.Level,
-                promotion=data.EquipmentID.Promotion,
+                id=str(data.equipment.tid),
+                rank=data.equipment.rank,
+                level=data.equipment.level,
+                promotion=data.equipment.promotion,
             )
         else:
             light_cone = None
         relics = []
-        for relic in data.RelicList:
+        for relic in data.relicList:
             sub_affix = []
-            for affix in relic.RelicSubAffix:
+            for affix in relic.subAffixList:
                 sub_affix.append(
                     SubAffixInfo(
-                        id=str(affix.SubAffixID),
-                        cnt=affix.Cnt,
-                        step=affix.Step,
+                        id=str(affix.affixId),
+                        cnt=affix.cnt,
+                        step=affix.step,
                     )
                 )
             relic_data = RelicBasicInfo(
-                id=str(relic.ID),
-                level=relic.Level,
-                main_affix_id=str(relic.MainAffixID),
+                id=str(relic.tid),
+                level=relic.level,
+                main_affix_id=str(relic.mainAffixId),
                 sub_affix_info=sub_affix,
             )
             relics.append(relic_data)
         skill_tree_levels = []
-        for behavior in data.BehaviorList:
+        for behavior in data.skillTreeList:
             skill_tree_levels.append(
                 LevelInfo(
-                    id=str(behavior.BehaviorID),
-                    level=behavior.Level,
+                    id=str(behavior.pointId),
+                    level=behavior.level,
                 )
             )
         character_basic = CharacterBasicInfo(
-            id=str(data.AvatarID),
-            rank=data.Rank,
-            level=data.Level,
-            promotion=data.Promotion,
+            id=str(data.avatarId),
+            rank=data.rank,
+            level=data.level,
+            promotion=data.promotion,
             skill_tree_levels=skill_tree_levels,
             light_cone=light_cone,
             relics=relics,
@@ -190,55 +189,59 @@ class MihomoApi:
         self, uid: str, language: Optional[Language] = None
     ) -> Optional[FormattedApiInfo]:
         api_data = await self.get_api_data(uid)
+        return await self.parse_api_data(api_data, language)
+
+    async def parse_api_data(
+        self, api_data: Optional[MihomoApiData], language: Optional[Language] = None
+    ) -> Optional[FormattedApiInfo]:
         if not api_data:
             return None
-        if not api_data.PlayerDetailInfo:
+        if not api_data.detailInfo:
             return None
         if not language:
             language = self.language
-        if self.language.value not in self.index:
+        if self.language not in self.index:
             await self.ensure_index()
         avatar = self.index[language.value].avatars.get(
-            str(api_data.PlayerDetailInfo.HeadIconID)
+            str(api_data.detailInfo.headIcon)
         )
         player_info = PlayerInfo(
-            uid=str(api_data.PlayerDetailInfo.UID),
-            nickname=api_data.PlayerDetailInfo.NickName,
-            level=api_data.PlayerDetailInfo.Level,
-            world_level=api_data.PlayerDetailInfo.WorldLevel,
-            friend_count=api_data.PlayerDetailInfo.CurFriendCount,
+            uid=str(api_data.detailInfo.uid),
+            nickname=api_data.detailInfo.nickname,
+            level=api_data.detailInfo.level,
+            world_level=api_data.detailInfo.worldLevel,
+            friend_count=api_data.detailInfo.friendCount,
             avatar=AvatarInfo(
-                id=str(api_data.PlayerDetailInfo.HeadIconID),
+                id=str(api_data.detailInfo.headIcon),
                 name=avatar.name if avatar else "",
                 icon=avatar.icon if avatar else "",
             ),
-            signature=api_data.PlayerDetailInfo.Signature,
-            birthday=api_data.PlayerDetailInfo.Birthday,
-            is_display=api_data.PlayerDetailInfo.IsDisplayAvatarList,
+            signature=api_data.detailInfo.signature,
+            is_display=api_data.detailInfo.isDisplayAvatar,
         )
-        if api_data.PlayerDetailInfo.PlayerSpaceInfo:
-            space_info = api_data.PlayerDetailInfo.PlayerSpaceInfo
+        if api_data.detailInfo.recordInfo:
+            space_info = api_data.detailInfo.recordInfo
             if space_info:
-                if space_info.ChallengeData:
+                if space_info.challengeInfo:
                     challenge_info = SpaceChallengeInfo(
-                        maze_group_id=space_info.ChallengeData.MazeGroupID,
-                        maze_group_index=space_info.ChallengeData.MazeGroupIndex,
-                        pre_maze_group_index=space_info.ChallengeData.PreMazeGroupIndex,
+                        maze_group_id=space_info.challengeInfo.scheduleGroupId,
+                        maze_group_index=space_info.challengeInfo.scheduleMaxLevel,
+                        pre_maze_group_index=space_info.challengeInfo.noneScheduleMaxLevel,
                     )
                 else:
                     challenge_info = None
                 player_info.space_info = SpaceInfo(
                     challenge_data=challenge_info,
-                    pass_area_progress=space_info.PassAreaProgress,
-                    light_cone_count=space_info.LightConeCount,
-                    avatar_count=space_info.AvatarCount,
-                    achievement_count=space_info.AchievementCount,
+                    pass_area_progress=space_info.maxRogueChallengeScore,
+                    light_cone_count=space_info.equipmentCount,
+                    avatar_count=space_info.avatarCount,
+                    achievement_count=space_info.achievementCount,
                 )
         character_ids = set()
         characters: List[CharacterInfo] = []
-        if api_data.PlayerDetailInfo.AssistAvatar:
+        if api_data.detailInfo.assistAvatarDetail:
             character_info = self.character_parse(
-                api_data.PlayerDetailInfo.AssistAvatar, language
+                api_data.detailInfo.assistAvatarDetail, language
             )
             if character_info:
                 character_info.name = character_info.name.replace(
@@ -246,9 +249,9 @@ class MihomoApi:
                 )
                 character_ids.add(character_info.id)
                 characters.append(character_info)
-        if api_data.PlayerDetailInfo.DisplayAvatarList:
-            for character in api_data.PlayerDetailInfo.DisplayAvatarList:
-                if str(character.AvatarID) in character_ids:
+        if api_data.detailInfo.avatarDetailList:
+            for character in api_data.detailInfo.avatarDetailList:
+                if str(character.avatarId) in character_ids:
                     continue
                 character_info = self.character_parse(character, language)
                 if character_info:
