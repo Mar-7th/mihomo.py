@@ -21,27 +21,13 @@ class Language(str, Enum):
     VI = "vi"
 
 
-class BaseData(Struct):
-    def to_dict(self):
-        result = {}
-        for field in self.__struct_fields__:
-            value = getattr(self, field)
-            if hasattr(value, "to_dict"):
-                result[field] = value.to_dict()
-            elif isinstance(value, list) and all(hasattr(i, "to_dict") for i in value):
-                result[field] = [i.to_dict() for i in value]
-            else:
-                result[field] = value
-        return result
-
-
-class SpaceChallengeData(BaseData):
+class SpaceChallengeData(Struct):
     scheduleMaxLevel: int = 0
     scheduleGroupId: int = 0
     noneScheduleMaxLevel: int = 0
 
 
-class SpaceData(BaseData):
+class SpaceData(Struct):
     challengeInfo: Optional[SpaceChallengeData] = None
     maxRogueChallengeScore: int = 0
     equipmentCount: int = 0
@@ -49,25 +35,25 @@ class SpaceData(BaseData):
     achievementCount: int = 0
 
 
-class EquipmentData(BaseData):
+class EquipmentData(Struct):
     tid: Optional[int] = None
     rank: int = 1
     level: int = 1
     promotion: int = 0
 
 
-class SkillTreeData(BaseData):
+class SkillTreeData(Struct):
     pointId: int
     level: int = 0
 
 
-class SubAffixData(BaseData):
+class SubAffixData(Struct):
     affixId: int
     cnt: int = 0
     step: int = 0
 
 
-class RelicData(BaseData):
+class RelicData(Struct):
     tid: int
     mainAffixId: int
     type: int
@@ -76,7 +62,7 @@ class RelicData(BaseData):
     subAffixList: List[SubAffixData] = []
 
 
-class CharacterData(BaseData):
+class CharacterData(Struct):
     avatarId: int
     rank: int = 0
     level: int = 1
@@ -86,7 +72,7 @@ class CharacterData(BaseData):
     relicList: List[RelicData] = []
 
 
-class PlayerData(BaseData):
+class PlayerData(Struct):
     uid: int
     nickname: str
     level: int = 0
@@ -100,17 +86,17 @@ class PlayerData(BaseData):
     avatarDetailList: List[CharacterData] = []
 
 
-class MihomoApiData(BaseData):
+class MihomoApiData(Struct):
     detailInfo: Optional[PlayerData] = None
 
 
-class SpaceChallengeInfo(BaseData):
+class SpaceChallengeInfo(Struct):
     maze_group_id: int = 0
     maze_group_index: int = 0
     pre_maze_group_index: int = 0
 
 
-class SpaceInfo(BaseData):
+class SpaceInfo(Struct):
     challenge_data: Optional[SpaceChallengeInfo] = None
     pass_area_progress: int = 0
     light_cone_count: int = 0
@@ -118,7 +104,7 @@ class SpaceInfo(BaseData):
     achievement_count: int = 0
 
 
-class PlayerInfo(BaseData):
+class PlayerInfo(Struct):
     uid: str
     nickname: str
     level: int = 0
@@ -130,6 +116,6 @@ class PlayerInfo(BaseData):
     space_info: Optional[SpaceInfo] = None
 
 
-class FormattedApiInfo(BaseData):
+class FormattedApiInfo(Struct):
     player: PlayerInfo
     characters: List[CharacterInfo] = []
