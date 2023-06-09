@@ -50,7 +50,7 @@ class SpaceData(BaseData):
 
 
 class EquipmentData(BaseData):
-    tid: int
+    tid: Optional[int] = None
     rank: int = 1
     level: int = 1
     promotion: int = 0

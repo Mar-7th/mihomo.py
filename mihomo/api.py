@@ -122,7 +122,7 @@ class MihomoApi:
     def character_parse(
         self, data: CharacterData, language: Optional[Language] = None
     ) -> Optional[CharacterInfo]:
-        if data.equipment:
+        if data.equipment and data.equipment.tid:
             light_cone = LightConeBasicInfo(
                 id=str(data.equipment.tid),
                 rank=data.equipment.rank,
