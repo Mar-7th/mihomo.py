@@ -179,14 +179,14 @@ files = [
 
 [[package]]
 name = "starrailres"
-version = "1.0.1"
+version = "1.1.0"
 description = "StarRailRes index package."
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "starrailres-1.0.1-py3-none-any.whl", hash = "sha256:36e54b98052c40c47583fa3ab15c6dc62b34f774e2bebdf4663545e03eae6381"},
-    {file = "starrailres-1.0.1.tar.gz", hash = "sha256:ba01328581a69a2ccaf69102d681c54cd936881c232d64075ae76f44d5d43f7a"},
+    {file = "starrailres-1.1.0-py3-none-any.whl", hash = "sha256:482149b9b4b754eef3737e17e0ed2c9bef54255c9f4341e83ea12d4b56cfdc08"},
+    {file = "starrailres-1.1.0.tar.gz", hash = "sha256:84721e7e9148709f276f41cbcebbcd15f315b43fbbb574b7acc83d05fbdd59e1"},
 ]
 
 [package.dependencies]
@@ -195,4 +195,4 @@ msgspec = ">=0.15.1,<0.16.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "eec802952621b8a9b7ca1acf5f953a016b91ce350fb795de67146f6726a606ee"
+content-hash = "6f029cfc17bab4ab5f9d8f7357007d65ad11ed2c44dcccc2012d7a36185e339c"
