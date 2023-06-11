@@ -10,7 +10,7 @@ from starrailres import (
     LevelInfo,
     LightConeBasicInfo,
     RelicBasicInfo,
-    SubAffixInfo,
+    SubAffixBasicInfo,
 )
 
 from .model import (
@@ -136,7 +136,7 @@ class MihomoApi:
             sub_affix = []
             for affix in relic.subAffixList:
                 sub_affix.append(
-                    SubAffixInfo(
+                    SubAffixBasicInfo(
                         id=str(affix.affixId),
                         cnt=affix.cnt,
                         step=affix.step,
