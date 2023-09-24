@@ -23,8 +23,8 @@ class Language(str, Enum):
 
 class SpaceChallengeData(Struct):
     scheduleMaxLevel: int = 0
-    scheduleGroupId: int = 0
-    noneScheduleMaxLevel: int = 0
+    scheduleGroupId: Optional[int] = None
+    noneScheduleMaxLevel: Optional[int] = None
 
 
 class SpaceData(Struct):
@@ -90,15 +90,15 @@ class MihomoApiData(Struct):
     detailInfo: Optional[PlayerData] = None
 
 
-class SpaceChallengeInfo(Struct):
-    maze_group_id: int = 0
-    maze_group_index: int = 0
-    pre_maze_group_index: int = 0
+class MemoryInfo(Struct):
+    level: int = 0
+    chaos_id: Optional[int] = None
+    chaos_level: Optional[int] = None
 
 
 class SpaceInfo(Struct):
-    challenge_data: Optional[SpaceChallengeInfo] = None
-    pass_area_progress: int = 0
+    memory_data: Optional[MemoryInfo] = None
+    universe_level: int = 0
     light_cone_count: int = 0
     avatar_count: int = 0
     achievement_count: int = 0

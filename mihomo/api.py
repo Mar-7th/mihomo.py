@@ -20,7 +20,7 @@ from .model import (
     Language,
     MihomoApiData,
     PlayerInfo,
-    SpaceChallengeInfo,
+    MemoryInfo,
     SpaceInfo,
 )
 
@@ -213,7 +213,9 @@ class MihomoApi:
             friend_count=api_data.detailInfo.friendCount,
             avatar=AvatarInfo(
                 id=str(api_data.detailInfo.headIcon),
-                name=avatar.name if avatar else "",
+                name=avatar.name.replace("{NICKNAME}", api_data.detailInfo.nickname)
+                if avatar
+                else "",
                 icon=avatar.icon if avatar else "",
             ),
             signature=api_data.detailInfo.signature,
@@ -223,16 +225,16 @@ class MihomoApi:
             space_info = api_data.detailInfo.recordInfo
             if space_info:
                 if space_info.challengeInfo:
-                    challenge_info = SpaceChallengeInfo(
-                        maze_group_id=space_info.challengeInfo.scheduleGroupId,
-                        maze_group_index=space_info.challengeInfo.scheduleMaxLevel,
-                        pre_maze_group_index=space_info.challengeInfo.noneScheduleMaxLevel,
+                    memory_info = MemoryInfo(
+                        level=space_info.challengeInfo.scheduleMaxLevel,
+                        chaos_id=space_info.challengeInfo.noneScheduleMaxLevel,
+                        chaos_level=space_info.challengeInfo.scheduleGroupId,
                     )
                 else:
-                    challenge_info = None
+                    memory_info = None
                 player_info.space_info = SpaceInfo(
-                    challenge_data=challenge_info,
-                    pass_area_progress=space_info.maxRogueChallengeScore,
+                    memory_data=memory_info,
+                    universe_level=space_info.maxRogueChallengeScore,
                     light_cone_count=space_info.equipmentCount,
                     avatar_count=space_info.avatarCount,
                     achievement_count=space_info.achievementCount,
