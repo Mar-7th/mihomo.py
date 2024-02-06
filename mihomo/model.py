@@ -21,14 +21,7 @@ class Language(str, Enum):
     VI = "vi"
 
 
-class SpaceChallengeData(Struct):
-    scheduleMaxLevel: int = 0
-    scheduleGroupId: Optional[int] = None
-    noneScheduleMaxLevel: Optional[int] = None
-
-
 class SpaceData(Struct):
-    challengeInfo: Optional[SpaceChallengeData] = None
     maxRogueChallengeScore: int = 0
     equipmentCount: int = 0
     avatarCount: int = 0
@@ -82,7 +75,7 @@ class PlayerData(Struct):
     signature: str = ""
     isDisplayAvatar: bool = False
     recordInfo: Optional[SpaceData] = None
-    assistAvatarDetail: Optional[CharacterData] = None
+    assistAvatarList: List[CharacterData] = []
     avatarDetailList: List[CharacterData] = []
 
 
@@ -90,14 +83,7 @@ class MihomoApiData(Struct):
     detailInfo: Optional[PlayerData] = None
 
 
-class MemoryInfo(Struct):
-    level: int = 0
-    chaos_id: Optional[int] = None
-    chaos_level: Optional[int] = None
-
-
 class SpaceInfo(Struct):
-    memory_data: Optional[MemoryInfo] = None
     universe_level: int = 0
     light_cone_count: int = 0
     avatar_count: int = 0

@@ -7,18 +7,28 @@ from mihomo.model import Language
 async def main():
     api = MihomoApi()
 
-    # # Set i18n if needed, default is False
-    # api.set_i18n(True)
-
-    # # Set proxy if needed
+    # Set proxy if needed
     # api.set_proxy("http://127.0.0.1:7890")
 
-    # Set language, default is Language.EN
-    api.set_language(Language.CN)
+    # Set i18n if needed, default is False
+    # api.set_i18n(True)
+
+    # Set language, default is Language.EN, only works when i18n is False
+    api.set_language(Language.JP)
+
+    # Set data path, default is `./data`
+    api.set_data_path("data")
+
+    # Set resource url, default is shown below
+    # api.set_res_url("https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/")
+
+    # Set api url, default is shown below
+    # api.set_api_url("https://api.mihomo.me/sr_info/")
 
     # Ensure index files are downloaded
     # This may take a while
     # If it is not called, index files will be downloaded when needed
+    # This will also check update of index files
     await api.ensure_index()
 
     # # The following shows how to get original api data
@@ -26,13 +36,15 @@ async def main():
     # print(data_origin)
 
     # This will return a FormattedApiInfo object
-    data = await api.get_parsed_api_data("100114514")
-    print(data)
+    data = await api.get_parsed_api_data("101797189")
 
-    # # The following shows how to export json text
-    # import msgspec
-    # data_json = msgspec.json.encode(data).decode()
-    # print(data_json)
+    # # The following shows how to save as json file
+    import msgspec
+
+    data_json = msgspec.json.encode(data).decode()
+
+    with open("./result.json", "w") as f:
+        f.write(data_json)
 
 
 loop = asyncio.get_event_loop()

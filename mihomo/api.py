@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import httpx
 from msgspec.json import decode
@@ -20,7 +20,6 @@ from .model import (
     Language,
     MihomoApiData,
     PlayerInfo,
-    MemoryInfo,
     SpaceInfo,
 )
 
@@ -47,7 +46,9 @@ file_set = {
 class MihomoApi:
     language = Language.EN
     i18n: bool = False
-    index_path = Path.cwd() / "data" / "index"
+    data_path = Path.cwd() / "data"
+    index_path = data_path / "index"
+    info_file = data_path / "info.json"
     res_url = "https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/"
     api_url = "https://api.mihomo.me/sr_info/"
     proxy: Optional[str] = None
@@ -59,8 +60,12 @@ class MihomoApi:
     def set_i18n(self, i18n: bool) -> None:
         self.i18n = i18n
 
-    def set_index_path(self, index_path: Path) -> None:
-        self.index_path = index_path
+    def set_data_path(self, data_path: Union[Path, str]) -> None:
+        if isinstance(data_path, str):
+            data_path = Path(data_path)
+        self.data_path = data_path
+        self.index_path = data_path / "index"
+        self.info_file = data_path / "info.json"
 
     def set_res_url(self, res_url: str) -> None:
         self.res_url = res_url
@@ -72,23 +77,43 @@ class MihomoApi:
         self.proxy = proxy
 
     async def ensure_index(self):
-        if not self.i18n:
-            for file in file_set:
-                if not (self.index_path / self.language.value / file).exists():
-                    if not (await self.download_index(file, self.language.value)):
-                        raise Exception(
-                            f"Download index {file} of {self.language.value} failed."
-                        )
-            self.index[self.language] = Index(self.index_path / self.language.value)
-        else:
+        update = await self.check_update()
+        if self.i18n:
             for language in Language:
                 for file in file_set:
-                    if not (self.index_path / language.value / file).exists():
+                    if not (self.index_path / language.value / file).exists() or update:
                         if not (await self.download_index(file, language.value)):
                             raise Exception(
                                 f"Download index {file} of {language} failed."
                             )
                 self.index[language.value] = Index(self.index_path / language.value)
+            return
+        for file in file_set:
+            if not (self.index_path / self.language.value / file).exists() or update:
+                if not (await self.download_index(file, self.language.value)):
+                    raise Exception(
+                        f"Download index {file} of {self.language.value} failed."
+                    )
+        self.index[self.language] = Index(self.index_path / self.language.value)
+
+    async def check_update(self) -> bool:
+        url = self.res_url + "info.json"
+        response = await self.request(url)
+        if not response:
+            return False
+        pre_info = Path(self.index_path / "info.json")
+        if not pre_info.exists():
+            pre_info.parent.mkdir(parents=True, exist_ok=True)
+            with open(pre_info, "wb") as f:
+                f.write(response.content)
+            return True
+        with open(pre_info, "rb") as f:
+            pre_data = f.read()
+        if pre_data != response.content:
+            with open(pre_info, "wb") as f:
+                f.write(response.content)
+            return True
+        return False
 
     async def download_index(self, file: str, language: str) -> bool:
         url = self.res_url + "index_min/" + language + "/" + file
@@ -213,9 +238,11 @@ class MihomoApi:
             friend_count=api_data.detailInfo.friendCount,
             avatar=AvatarInfo(
                 id=str(api_data.detailInfo.headIcon),
-                name=avatar.name.replace("{NICKNAME}", api_data.detailInfo.nickname)
-                if avatar
-                else "",
+                name=(
+                    avatar.name.replace("{NICKNAME}", api_data.detailInfo.nickname)
+                    if avatar
+                    else ""
+                ),
                 icon=avatar.icon if avatar else "",
             ),
             signature=api_data.detailInfo.signature,
@@ -224,16 +251,7 @@ class MihomoApi:
         if api_data.detailInfo.recordInfo:
             space_info = api_data.detailInfo.recordInfo
             if space_info:
-                if space_info.challengeInfo:
-                    memory_info = MemoryInfo(
-                        level=space_info.challengeInfo.scheduleMaxLevel,
-                        chaos_id=space_info.challengeInfo.noneScheduleMaxLevel,
-                        chaos_level=space_info.challengeInfo.scheduleGroupId,
-                    )
-                else:
-                    memory_info = None
                 player_info.space_info = SpaceInfo(
-                    memory_data=memory_info,
                     universe_level=space_info.maxRogueChallengeScore,
                     light_cone_count=space_info.equipmentCount,
                     avatar_count=space_info.avatarCount,
@@ -241,16 +259,15 @@ class MihomoApi:
                 )
         character_ids = set()
         characters: List[CharacterInfo] = []
-        if api_data.detailInfo.assistAvatarDetail:
-            character_info = self.character_parse(
-                api_data.detailInfo.assistAvatarDetail, language
-            )
-            if character_info:
-                character_info.name = character_info.name.replace(
-                    "{NICKNAME}", player_info.nickname
-                )
-                character_ids.add(character_info.id)
-                characters.append(character_info)
+        if api_data.detailInfo.assistAvatarList:
+            for character in api_data.detailInfo.assistAvatarList:
+                character_info = self.character_parse(character, language)
+                if character_info:
+                    character_info.name = character_info.name.replace(
+                        "{NICKNAME}", player_info.nickname
+                    )
+                    character_ids.add(character_info.id)
+                    characters.append(character_info)
         if api_data.detailInfo.avatarDetailList:
             for character in api_data.detailInfo.avatarDetailList:
                 if str(character.avatarId) in character_ids:
