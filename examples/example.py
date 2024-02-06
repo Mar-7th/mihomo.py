@@ -33,10 +33,16 @@ async def main():
 
     # # The following shows how to get original api data
     # data_origin = await api.get_api_data("100114514")
-    # print(data_origin)
+    # if data_origin:
+    #     print(data_origin.detailInfo)
 
     # This will return a FormattedApiInfo object
-    data = await api.get_parsed_api_data("101797189")
+    data = await api.get_parsed_api_data("100114514")
+    if data:
+        print("Player UID:", data.player.uid)
+        print("Player Nickname:", data.player.nickname)
+        print("Player Level:", data.player.level)
+        print("Characters:", [c.name for c in data.characters])
 
     # # The following shows how to save as json file
     import msgspec
