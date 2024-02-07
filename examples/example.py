@@ -24,11 +24,14 @@ async def main():
 
     # Set api url, default is shown below
     # api.set_api_url("https://api.mihomo.me/sr_info/")
+    # Set as Enka
+    # api.set_api_url("https://enka.network/api/hsr/uid/")
 
     # Ensure index files are downloaded
     # This may take a while
     # If it is not called, index files will be downloaded when needed
     # This will also check update of index files
+    # Call this regularly to auto update the index files
     await api.ensure_index()
 
     # # The following shows how to get original api data
@@ -37,7 +40,7 @@ async def main():
     #     print(data_origin.detailInfo)
 
     # This will return a FormattedApiInfo object
-    data = await api.get_parsed_api_data("100114514")
+    data = await api.get_parsed_api_data("101797189")
     if data:
         print("Player UID:", data.player.uid)
         print("Player Nickname:", data.player.nickname)
