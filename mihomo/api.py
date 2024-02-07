@@ -18,6 +18,7 @@ from .model import (
     CharacterData,
     FormattedApiInfo,
     Language,
+    MemoryInfo,
     MihomoApiData,
     PlayerInfo,
     SpaceInfo,
@@ -251,33 +252,46 @@ class MihomoApi:
         if api_data.detailInfo.recordInfo:
             space_info = api_data.detailInfo.recordInfo
             if space_info:
+                if space_info.challengeInfo:
+                    memory_info = MemoryInfo(
+                        level=space_info.challengeInfo.scheduleMaxLevel,
+                        chaos_id=space_info.challengeInfo.noneScheduleMaxLevel,
+                        chaos_level=space_info.challengeInfo.scheduleGroupId,
+                    )
+                else:
+                    memory_info = None
                 player_info.space_info = SpaceInfo(
+                    memory_data=memory_info,
                     universe_level=space_info.maxRogueChallengeScore,
                     light_cone_count=space_info.equipmentCount,
                     avatar_count=space_info.avatarCount,
                     achievement_count=space_info.achievementCount,
                 )
-        character_ids = set()
+        pos_dict: Dict[str, List[int]] = {}
         characters: List[CharacterInfo] = []
         if api_data.detailInfo.assistAvatarList:
             for character in api_data.detailInfo.assistAvatarList:
+                pos_dict[str(character.avatarId)] = [character.pos]
                 character_info = self.character_parse(character, language)
                 if character_info:
                     character_info.name = character_info.name.replace(
                         "{NICKNAME}", player_info.nickname
                     )
-                    character_ids.add(character_info.id)
                     characters.append(character_info)
         if api_data.detailInfo.avatarDetailList:
             for character in api_data.detailInfo.avatarDetailList:
-                if str(character.avatarId) in character_ids:
+                if str(character.avatarId) in pos_dict:
+                    pos_dict[str(character.avatarId)].append(character.pos + 3)
                     continue
+                pos_dict[str(character.avatarId)] = [character.pos + 3]
                 character_info = self.character_parse(character, language)
                 if character_info:
                     character_info.name = character_info.name.replace(
                         "{NICKNAME}", player_info.nickname
                     )
                     characters.append(character_info)
+        for character in characters:
+            character.pos = pos_dict[character.id]
         formatted_api_info = FormattedApiInfo(
             player=player_info,
             characters=characters,
