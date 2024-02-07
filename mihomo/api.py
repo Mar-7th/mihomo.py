@@ -255,8 +255,8 @@ class MihomoApi:
                 if space_info.challengeInfo:
                     memory_info = MemoryInfo(
                         level=space_info.challengeInfo.scheduleMaxLevel,
-                        chaos_id=space_info.challengeInfo.noneScheduleMaxLevel,
-                        chaos_level=space_info.challengeInfo.scheduleGroupId,
+                        chaos_id=space_info.challengeInfo.scheduleGroupId,
+                        chaos_level=space_info.challengeInfo.noneScheduleMaxLevel,
                     )
                 else:
                     memory_info = None
