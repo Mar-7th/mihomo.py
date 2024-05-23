@@ -22,17 +22,21 @@ class Language(str, Enum):
 
 
 class SpaceChallengeData(Struct):
-    scheduleMaxLevel: int = 0
     scheduleGroupId: Optional[int] = None
-    noneScheduleMaxLevel: Optional[int] = None
+    abyssLevel: int = 0
+    abyssStarCount: int = 0
+    noneScheduleMaxLevel: int = 0
 
 
 class SpaceData(Struct):
     challengeInfo: Optional[SpaceChallengeData] = None
     maxRogueChallengeScore: int = 0
-    equipmentCount: int = 0
     avatarCount: int = 0
+    equipmentCount: int = 0
+    relicCount: int = 0
     achievementCount: int = 0
+    bookCount: int = 0
+    musicCount: int = 0
 
 
 class EquipmentData(Struct):
@@ -95,6 +99,7 @@ class MemoryInfo(Struct):
     level: int = 0
     chaos_id: Optional[int] = None
     chaos_level: Optional[int] = None
+    chaos_star_count: Optional[int] = None
 
 
 class SpaceInfo(Struct):
