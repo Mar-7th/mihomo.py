@@ -40,7 +40,7 @@ async def main():
     #     print(data_origin.detailInfo)
 
     # This will return a FormattedApiInfo object
-    data = await api.get_parsed_api_data("101797189")
+    data = await api.get_parsed_api_data("100114514")
     if data:
         print("Player UID:", data.player.uid)
         print("Player Nickname:", data.player.nickname)
