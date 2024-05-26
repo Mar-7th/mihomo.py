@@ -170,13 +170,13 @@ files = [
 
 [[package]]
 name = "starrailres"
-version = "2.0.0"
+version = "2.1.0"
 description = "StarRailRes parse package"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = "<4.0,>=3.8"
 files = [
-    {file = "starrailres-2.0.0-py3-none-any.whl", hash = "sha256:443b24d82042de2e4e791626ab9ccb65b1040e75e659a4d63c1fe90afe9d625a"},
-    {file = "starrailres-2.0.0.tar.gz", hash = "sha256:8934174741a4d16ff713cd9e8de4f9d5b1ba1bda4d9ebd2575aba97981761bbb"},
+    {file = "starrailres-2.1.0-py3-none-any.whl", hash = "sha256:8f9ef7cfcc09fb423ab4bf70a587e845da3945efac912cf44d4fd7ef2fae2c4d"},
+    {file = "starrailres-2.1.0.tar.gz", hash = "sha256:e3a9f2efbc4eca6cbc29592651f2746bf1f9657f17cae8cb6a715a75a043efde"},
 ]
 
 [package.dependencies]
@@ -185,4 +185,4 @@ msgspec = ">=0.15.1,<0.16.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "34c6cea4335431147c0c4b2bc3b4219ffb77d606c5fef28a262c66b91f5fd6a6"
+content-hash = "7140601d063fd49cf092642fcadfed2008c49049ca59f4215f29b0bb797a864d"
