@@ -264,9 +264,12 @@ class MihomoApi:
                 player_info.space_info = SpaceInfo(
                     memory_data=memory_info,
                     universe_level=space_info.maxRogueChallengeScore,
-                    light_cone_count=space_info.equipmentCount,
                     avatar_count=space_info.avatarCount,
+                    light_cone_count=space_info.equipmentCount,
+                    relic_count=space_info.relicCount,
                     achievement_count=space_info.achievementCount,
+                    book_count=space_info.bookCount,
+                    music_count=space_info.musicCount,
                 )
         pos_dict: Dict[str, List[int]] = {}
         characters: List[CharacterInfo] = []

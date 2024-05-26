@@ -105,9 +105,12 @@ class MemoryInfo(Struct):
 class SpaceInfo(Struct):
     memory_data: Optional[MemoryInfo] = None
     universe_level: int = 0
-    light_cone_count: int = 0
     avatar_count: int = 0
+    light_cone_count: int = 0
+    relic_count: int = 0
     achievement_count: int = 0
+    book_count: int = 0
+    music_count: int = 0
 
 
 class PlayerInfo(Struct):
