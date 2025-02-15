@@ -14,4 +14,4 @@ pip install mihomo
 
 Refer to [example](./examples/example.py).
 
-Document of API: <https://march7th.xiaohei.moe/en/resource/mihomo_api.html>
+Document of API: <https://march7th.xyz/en/api/>
