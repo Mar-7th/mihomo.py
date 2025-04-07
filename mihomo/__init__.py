@@ -1,2 +1,2 @@
-from .api import MihomoApi
-from .model import FormattedApiInfo, Language, MihomoApiData
+from .api import MihomoApi as MihomoApi
+from .model import *  # noqa
