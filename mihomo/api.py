@@ -244,7 +244,7 @@ class MihomoApi:
                     if avatar
                     else ""
                 ),
-                icon=avatar.icon if avatar else "",
+                icon=avatar.icon if avatar and avatar.icon else "",
             ),
             signature=api_data.detailInfo.signature,
             is_display=api_data.detailInfo.isDisplayAvatar,
