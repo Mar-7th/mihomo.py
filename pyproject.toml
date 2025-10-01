@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mihomo"
-version = "3.5.0"
+version = "3.6.0"
 description = "Library for API wrapper data from mihomo"
 authors = ["mobyw <mobyw66@gmail.com>"]
 license = "MIT"
@@ -12,7 +12,7 @@ repository = "https://github.com/Mar-7th/mihomo.py"
 python = "^3.9"
 msgspec = "^0.19"
 httpx = "^0.28"
-starrailres = "^3.5"
+starrailres = "^3.6"
 
 
 [build-system]
