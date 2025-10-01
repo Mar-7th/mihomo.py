@@ -72,6 +72,7 @@ class CharacterData(Struct):
     rank: int = 0
     level: int = 1
     promotion: int = 0
+    enhancedId: int = 0
     equipment: Optional[EquipmentData] = None
     skillTreeList: List[SkillTreeData] = []
     relicList: List[RelicData] = []

@@ -188,6 +188,7 @@ class MihomoApi:
             rank=data.rank,
             level=data.level,
             promotion=data.promotion,
+            enhanced=bool(data.enhancedId),
             skill_tree_levels=skill_tree_levels,
             light_cone=light_cone,
             relics=relics,
